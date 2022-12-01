@@ -1,0 +1,26 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /mai
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${DATASOURCE_URL:jdbc:postgresql://localhost:5432/postgres}
+    username: ${DATASOURCE_USERNAME:postgres}
+    password: ${DATASOURCE_PASSWORD:postgres}
+  session:
+    store-type: jdbc
+    jdbc:
+      initialize-schema: always
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+  aop:
+    proxy-target-class: true
+jwt_secret: dasjklfhafalidjasldkqqjdoam
+jwt_name: authtoken
+model_url: ${MODEL_URL:http://localhost:5000}
+front_url: ${FRONT_URL:http://localhost}

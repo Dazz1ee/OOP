@@ -1,0 +1,9 @@
+FROM openjdk:oracle
+ENV MODEL_URL http://localhost:80
+ENV FRONT_URL http://localhost
+ENV DATASOURCE_URL jdbc:postgresql://localhost:5432/postgres
+ENV DATASOURCE_USERNAME postgres
+ENV DATASOURCE_PASSWORD postgres
+ADD target/maioop-0.0.1-SNAPSHOT.jar /
+EXPOSE 8080
+CMD ["java", "-jar", "maioop-0.0.1-SNAPSHOT.jar", "--model_url=${MODEL_URL}"]

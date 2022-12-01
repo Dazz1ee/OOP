@@ -1,0 +1,12 @@
+
+.Mai-icon {
+    transition: 0.4s;
+    width: 2.5em;
+    height: 2.5em;
+    object-fit: cover;
+    /*padding: 5px 5px;*/
+    cursor: pointer;
+}
+.Mai-icon:hover {
+    transform: scale(1.05);
+}

@@ -1,0 +1,51 @@
+
+
+.text{
+    font: bold 1em 'Consolas', monospace;
+    display: inline-block; height: 1.5em; width: 0;
+    overflow: hidden; margin-right: 80ch;
+    vertical-align: top; color: #0fbca9;
+    animation: shrink steps(16) 3s infinite alternate;
+}
+
+@keyframes shrink {
+    0%, 10% { width: 0; margin-right: 16ch; }
+    40%, 100% { width: 16ch; margin-right: 0; }
+}
+
+
+/*.wrapper {*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*    margin-top: 30px;*/
+/*}*/
+
+/*.text {*/
+/*    width: 291ch;*/
+/*    color: black;*/
+/*    font-family: monospace;*/
+/*    font-size: 30px;*/
+/*    white-space: nowrap; !* не переносить текст на другую строку *!*/
+/*    border-right: 3px solid white; !* рисуем курсор *!*/
+/*    animation: cursor 0.7s step-end infinite, printed_text 11s steps(41);*/
+/*}*/
+
+/*@keyframes cursor {*/
+/*    0% {*/
+/*        border-color: black;*/
+/*    }*/
+
+/*    50% {*/
+/*        border-color: transparent;*/
+/*    }*/
+
+/*    100% {*/
+/*        border-color: white;*/
+/*    }*/
+/*}*/
+
+/*@keyframes printed_text {*/
+/*    from {*/
+/*        width: 0;*/
+/*    }*/
+/*}*/
