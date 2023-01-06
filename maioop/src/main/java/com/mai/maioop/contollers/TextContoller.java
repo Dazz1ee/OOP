@@ -3,15 +3,22 @@ package com.mai.maioop.contollers;
 import com.mai.maioop.entity.Posts;
 import com.mai.maioop.entity.User;
 import com.mai.maioop.model.GenerationModel;
+import com.mai.maioop.model.MyMessage;
 import com.mai.maioop.model.ResponseModel;
 import com.mai.maioop.security.UserDetailsImp;
 import com.mai.maioop.services.PostService;
 import com.mai.maioop.services.UserService;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageBuilder;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -20,10 +27,8 @@ import reactor.core.publisher.Mono;
 
 import java.net.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 @RestController
@@ -37,6 +42,15 @@ public class TextContoller {
 
     @Autowired
     private PostService postService;
+
+
+    @Autowired
+    AmqpTemplate rabbitTemplate;
+
+    @Autowired
+    private DirectExchange exchange;
+
+    private AtomicInteger start;
 
     @GetMapping("/getLast")
     public ResponseEntity<?> getLast(Authentication authentication){
@@ -58,12 +72,10 @@ public class TextContoller {
         }
     }
 
+    @RabbitListener(queues = "textQueue")
     @Transactional
-    @PostMapping("/generation")
-    public ResponseEntity<?> generate(@RequestBody GenerationModel model, Authentication authentication) throws URISyntaxException {
-        UserDetailsImp userDetailsImp = (UserDetailsImp) authentication.getPrincipal();
-        System.out.println(userDetailsImp.getEmail() + " " + model.getText() + model.getAuthor());
-        model.setText(model.getText().trim());
+    public String[] listen(MyMessage message) throws URISyntaxException {
+        GenerationModel model = new GenerationModel(message.getAuthor(), message.getTexts().get(0), message.getCount());
         WebClient client = WebClient.create();
         String[] response= client.post()
                 .uri(new URI(adress + "/ggg"))
@@ -73,27 +85,31 @@ public class TextContoller {
                 .acceptCharset(StandardCharsets.UTF_8)
                 .retrieve().bodyToMono(String[].class).block();
         HashMap<String, String> ans = new HashMap<>();
-//        int i = 1;
-//        for(String text : response){
-//            ans.put("text" + i, text.replace(model.author() + " : ", ""));
-//            ++i;
-//        }
         for (int j = 0; j < response.length; j++) {
-            response[j] =  response[j].replace(model.getAuthor() + " : ", "");
+            response[j] =  response[j].replace(message.getAuthor() + " : ", "");
         }
-        Optional<Posts> optionalPosts = postService.findById(userDetailsImp.getId());
+        Optional<Posts> optionalPosts = postService.findById(message.getUserId());
         if(optionalPosts.isEmpty()) {
             Posts post = new Posts();
             post.setPosts(response);
-            User user = userService.findUserById(userDetailsImp.getId());
+            User user = userService.findUserById(message.getUserId());
             post.setUser(user);
             postService.savePost(post);
         } else {
             optionalPosts.get().setPosts(response);
         }
-
+        return response;
+    }
+    @PostMapping("/generation")
+    public ResponseEntity<?> generate(@RequestBody GenerationModel model, Authentication authentication) throws URISyntaxException {
+        UserDetailsImp userDetailsImp = (UserDetailsImp) authentication.getPrincipal();
+        MyMessage message = new MyMessage(userDetailsImp.getId(), model.getCount(), List.of(new String[]{model.getText()}), model.getAuthor());
+        String[] response = (String[]) rabbitTemplate.convertSendAndReceive(exchange.getName(), "rpc", message);
         return ResponseEntity.ok().body(response);
     }
+
+
+
     /* другой вариант запроса на сервер.
             try {
             URL url = new URL(adress);

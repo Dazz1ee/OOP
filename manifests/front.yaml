@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    app: frontend
+spec:
+  selector:
+    matchLabels:
+      app: frontend
+  replicas: 2
+  minReadySeconds: 15
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - image: dazz1ee/front:latest
+          imagePullPolicy: Always
+          name: frontend
+          ports:
+            - containerPort: 80
+          env:
+            - name: REACT_APP_AUTH
+              value: "http://192.168.49.2:31244/mai"
+            - name: REACT_APP_REQUEST
+              value: "http://192.168.49.2:31244/mai"

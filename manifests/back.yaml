@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  labels:
+    app: backend
+spec:
+  selector:
+    matchLabels:
+      app: backend
+  replicas: 2
+  minReadySeconds: 15
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - image: dazz1ee/backend
+          imagePullPolicy: Always
+          name: backend
+          env:
+            - name: MODEL_URL
+              value: "http://ml"
+            - name: FRONT_URL
+              value: "http://"
+            - name: DATASOURCE_USER
+              value: "postgres"
+            - name: DATASOURCE_PASSWORD
+              value: "postgres"
+            - name: DATASOURCE_URL
+              value: "jdbc:postgresql://postgres:5432/postgres"
+            - name: RABBITMQ_URL
+              value: "rabbitmq"
+          ports:
+            - containerPort: 8080

@@ -24,3 +24,4 @@ jwt_secret: dasjklfhafalidjasldkqqjdoam
 jwt_name: authtoken
 model_url: ${MODEL_URL:http://localhost:5000}
 front_url: ${FRONT_URL:http://localhost}
+rabbitmq_url: ${RABBITMQ_URL:localhost}

@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ml
+  labels:
+    app: ml
+spec:
+  selector:
+    matchLabels:
+      app: ml
+  replicas: 1
+  minReadySeconds: 15
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: ml
+    spec:
+      containers:
+        - image: dazz1ee/model-service
+          imagePullPolicy: Always
+          name: ml
+          ports:
+            - containerPort: 5000

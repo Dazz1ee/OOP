@@ -52,12 +52,9 @@ public class WebSecurityConfig {
         httpSecurity
                 .cors().and().csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/only_for_admins/**").hasRole("ADMIN")
+                .antMatchers("/getLast/**").hasRole("USER")
                 .antMatchers("/signout/**").hasRole("USER")
                 .antMatchers("/generation/**").hasRole("USER")
-                .antMatchers("/upload/**").hasRole("USER")
-                .antMatchers("/download/**").hasRole("USER")
-                .antMatchers("/share/**").hasRole("USER")
                 .and()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement()

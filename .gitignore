@@ -1,2 +1,10 @@
 .idea
+test
+PYP.ipynb
 ServerML/TrainModel
+ServerML/requirements.txt
+ServerML/.idea
+ServerML/static
+ServerML/templates
+front/.idea
+back/HELP.md

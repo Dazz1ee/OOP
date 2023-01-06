@@ -12,6 +12,7 @@
 	<artifactId>maioop</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>maioop</name>
+	<packaging>jar</packaging>
 	<description>Server for OOP</description>
 	<properties>
 		<java.version>17</java.version>
@@ -98,6 +99,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+			<version>3.0.1</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -118,15 +124,6 @@
 				<groupId>org.flywaydb</groupId>
 				<artifactId>flyway-maven-plugin</artifactId>
 				<version>9.7.0</version>
-				<configuration>
-					<user>postgres</user>
-					<password>postgres</password>
-					<schemas>
-						<schema>public</schema>
-					</schemas>
-					<url>jdbc:postgresql://localhost:5432/postgres</url>
-					<cleanDisabled>false</cleanDisabled>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>

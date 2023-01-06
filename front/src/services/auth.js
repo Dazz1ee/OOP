@@ -1,6 +1,7 @@
 import axios from "axios";
 import app from "../axiosImp";
-const URL = "http://localhost:8080/mai/"
+// const URL = "http://localhost:8080/mai/"
+const URL = '/back/mai/'
 
 
 const config = {
